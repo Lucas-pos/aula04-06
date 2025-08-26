@@ -1,0 +1,100 @@
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class Catalogo {
+    private ArrayList<Usuario> usuarios = new ArrayList<>();
+    private ArrayList<Midias> midias = new ArrayList<>();
+    private Scanner scanner = new Scanner(System.in);
+
+    // Tela inicial (login/criar conta/sair)
+    int login() {
+        int opcao = -1;
+        while (opcao < 1 || opcao > 3) {
+            try {
+                System.out.print("\n___BEM-VINDO___" +
+                        "\nEntre em uma conta para ouvir seus sons!" +
+                        "\n1 - Criar nova conta" +
+                        "\n2 - Entrar em uma conta já existente" +
+                        "\n3 - Sair do app" +
+                        "\nDigite a opção correspondente: ");
+                opcao = scanner.nextInt();
+                scanner.nextLine(); // limpa buffer
+            } catch (InputMismatchException e) {
+                System.out.println("⚠ Entrada inválida! Digite apenas números.");
+                scanner.nextLine(); // limpa o que foi digitado errado
+            }
+        }
+        return opcao;
+    }
+
+    // Criar novo usuário
+    void criarUsuario() {
+        System.out.print("Digite o nome do usuário: ");
+        String nomeUsuario = scanner.nextLine();
+
+        System.out.print("Digite o e-mail do usuário: ");
+        String emailUsuario = scanner.nextLine();
+
+        // Verifica se o email já existe
+        for (Usuario u : usuarios) {
+            if (u.getEmail().equalsIgnoreCase(emailUsuario)) {
+                System.out.println("⚠ Já existe um usuário cadastrado com esse e-mail!");
+                return;
+            }
+        }
+
+        Usuario usuario = new Usuario(nomeUsuario, emailUsuario);
+        usuarios.add(usuario);
+        System.out.println("✅ Usuário cadastrado com sucesso!");
+    }
+
+    // Menu principal do usuário
+    int menu() {
+        int opcao = -1;
+        while (opcao < 1 || opcao > 6) {
+            try {
+                System.out.print("\nO que deseja?" +
+                        "\n1 - Criar uma playlist" +
+                        "\n2 - Ver suas Playlists" +
+                        "\n3 - Escolher playlist" +
+                        "\n4 - Ver suas mídias" +
+                        "\n5 - Pesquisar mídias" +
+                        "\n6 - Sair da conta" +
+                        "\nDigite a opção: ");
+                opcao = scanner.nextInt();
+                scanner.nextLine();
+            } catch (InputMismatchException e) {
+                System.out.println("⚠ Entrada inválida! Digite apenas números.");
+                scanner.nextLine();
+            }
+        }
+        return opcao;
+    }
+
+    // Escolher usuário existente
+    Usuario escolherUsuario() {
+        if (usuarios.isEmpty()) {
+            System.out.println("⚠ Ainda não há usuários registrados!");
+            return null;
+        }
+
+        System.out.println("\nContas disponíveis:");
+        for (Usuario conta : usuarios) {
+            System.out.println("- " + conta.toString());
+        }
+
+        System.out.print("Digite o email da conta que deseja acessar: ");
+        String emailEscolhido = scanner.nextLine();
+
+        for (Usuario usuarioEscolhido : usuarios) {
+            if (usuarioEscolhido.getEmail().equalsIgnoreCase(emailEscolhido)) {
+                System.out.println("👤 Bem-vindo(a), " + usuarioEscolhido.getNome() + "!");
+                return usuarioEscolhido;
+            }
+        }
+
+        System.out.println("⚠ Nenhum usuário encontrado com esse e-mail.");
+        return null;
+    }
+}
